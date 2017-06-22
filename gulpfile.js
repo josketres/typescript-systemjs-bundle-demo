@@ -1,26 +1,34 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const typescript = require('typescript');
-const systemjsBuilder = require('gulp-systemjs-builder');
 const webserver = require('gulp-webserver');
+const sourcemaps = require('gulp-sourcemaps');
+const Builder = require('systemjs-builder');
 
 gulp.task('tsc', () => {
     const tsProject = ts.createProject('tsconfig.json');
     return gulp
         .src('src/**/*.ts')
+        .pipe(sourcemaps.init())
         .pipe(tsProject()).js
+        .pipe(sourcemaps.write('.', {sourceRoot: '.'}))
         .pipe(gulp.dest('./src'));
 });
 
 gulp.task('bundle', ['tsc'], () => {
-    let builder = systemjsBuilder('src/', 'system.conf.js');
-    return builder.build('main.js', 'bundle.js', {
-        minify: true,
-        mangle: true,
-        sourceMaps: true,
-        lowResSourceMaps: true
-    })
-        .pipe(gulp.dest('./src'));
+    const builder = new Builder('./src/', 'system.conf.js');
+    return builder
+        .bundle('main.js', 'src/bundle-manual.js', {
+            sourceMaps: true,
+            sourceMapContents: true
+        })
+        .then(function () {
+            console.log('Build complete');
+        })
+        .catch(function (err) {
+            console.log('Build error');
+            console.log(err);
+        });
 });
 
 gulp.task('webserver', ['bundle'], () => {

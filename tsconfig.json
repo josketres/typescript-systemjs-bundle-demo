@@ -3,7 +3,7 @@
     "module": "commonjs",
     "sourceMap": true,
     "target": "es5",
-    "baseUrl": "src/"
+    "baseUrl": "."
   }
 }
 
