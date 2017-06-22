@@ -1,3 +1,3 @@
-import bar from './bar';
+import bar from 'lib/bar';
 
 bar();

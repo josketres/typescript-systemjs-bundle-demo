@@ -1,10 +1,10 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const typescript = require('typescript');
-const builder = require('gulp-systemjs-builder');
+const systemjsBuilder = require('gulp-systemjs-builder');
 const webserver = require('gulp-webserver');
 
-gulp.task('ts', () => {
+gulp.task('tsc', () => {
     const tsProject = ts.createProject('tsconfig.json');
     return gulp
         .src('src/**/*.ts')
@@ -12,9 +12,14 @@ gulp.task('ts', () => {
         .pipe(gulp.dest('./src'));
 });
 
-gulp.task('bundle', ['ts'], () => {
-    return builder('src', 'system.conf.js')
-        .bundle('main.js', 'main.min.js')
+gulp.task('bundle', ['tsc'], () => {
+    let builder = systemjsBuilder('src/', 'system.conf.js');
+    return builder.build('main.js', 'bundle.js', {
+        minify: true,
+        mangle: true,
+        sourceMaps: true,
+        lowResSourceMaps: true
+    })
         .pipe(gulp.dest('./src'));
 });
 

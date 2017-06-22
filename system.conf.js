@@ -1,3 +1,8 @@
 SystemJS.config({
-    baseURL: '/src/'
+    baseURL: '/src/',
+    packages: {
+        'lib': {
+            defaultExtension: 'js'
+        }
+    }
 });
